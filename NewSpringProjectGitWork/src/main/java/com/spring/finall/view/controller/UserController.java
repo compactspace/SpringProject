@@ -877,7 +877,6 @@ public class UserController {
 
 	}
 
-
 	// 로그아웃시도
 	@RequestMapping(value = "/logout.do")
 	public String logout(HttpSession session) {
