@@ -877,60 +877,7 @@ public class UserController {
 
 	}
 
-//	// 네이버로그인후 네이버로그인으로 가입된 회원인미 먼저 확인하는 메소드
-//	@RequestMapping(value = "/navercheckid.do")
-//	public String naverMembershipCheck(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {
-//
-//		System.out.println("네이버컨트롤로에서 디스페쳐로  일로 발급받은 아이디가  와졌니?" + req.getAttribute("id"));
-//		String id = (String) req.getAttribute("id");
-//		vo.setId(id);
-//
-//		boolean check = memberService.checkidMembership(vo);
-//		System.out.println("사전검사 아이디가 투루라면 가입가능 하고 if문 타고 아니라면 펠스로 else문탐" + check);
-//		if (check) {
-//			return "/insertNaverMembership.do?id=" + id;
-//
-//		} else {
-//			System.out.println("사전검사 아이디가 팰스라면 바로 로그인시켜버려" + check);
-//
-//			return "/naverlogin.do?id=" + id;
-//		}
-//
-//	} // 네이버로그인 후 이미 가입된 회원인지 함수 종료
 
-//	// 네이버로그인후 자동 회원가입시도함수
-//	@RequestMapping(value = "/insertNaverMembership.do")
-//	public String insertNaverMembership(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {
-////네이버 가입자는 패스워드 필요없어서 지움
-//		System.out.println("req id->>" + req.getParameter("id"));
-//		String id = req.getParameter("id");
-//		System.out.println("id를 못가져오나" + vo.getId());
-//		vo.setUser_where("naveruser");
-//		vo.setNaver_id("네이버이용자");
-//		vo.setUser_name("미기입");
-//		vo.setPassword("불필요");
-//		try {
-//			memberService.insertMembership(vo);
-//			return "/naverlogin.do?id=" + id;
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("내가 뜨면 프라이머리키 위배로 데이터삽입 오류");
-//		}
-//
-//		return "/naverlogin.do";
-//
-//	}// 네이버로그인후 회원가입 종료
-
-//	// 네이버가입자 로그인시도시작
-//	@RequestMapping(value = "/naverlogin.do")
-//	public String naverlogin(UserVO vo, HttpSession session, HttpServletRequest req) throws Exception {
-//
-//		session.setAttribute("userId", vo.getId());
-//		System.out.println("네이버로그인자는 세션어트리뷰트가지금 널임?" + vo.getId());
-//		return "worklist.jsp";
-//
-//	}// 네이버가입자 로그인시도 종료
 
 	// 로그아웃시도
 	@RequestMapping(value = "/logout.do")
