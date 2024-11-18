@@ -3,7 +3,7 @@ package com.spring.finall;
 //여기선 단순 회원가입전
 public class AuthVO {
 //주석 그냥 깃허브 업데이트용 주석임 의미 없d는 주석
-	//dfsdsf 
+	//dfsdsf
 	int authnumber;
 
 	String auth_check; 
