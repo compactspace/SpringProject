@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+
+
+<http pattern="/img_mainhome/**" security="none"/>
+<http pattern="/img_onedayclass/**" security="none"/>
+<http pattern="/img/**" security="none"/>
+
+<http pattern="/img_board/**" security="none"/>
+<http pattern="/img_cart/**" security="none"/>
+<http pattern="/img_icon/**" security="none"/>
+
+<http pattern="/img_infoicon/**" security="none"/>
+<http pattern="/img_login/**" security="none"/>
+<http pattern="/img_main/**" security="none"/>
+
+<http pattern="/img_membership/**" security="none"/>
+<http pattern="/img_product/**" security="none"/>
+<http pattern="/img_review/**" security="none"/>
+<http pattern="/js/**" security="none"/>
+
+	<http auto-config="false" use-expressions="true">
+	
+
+		<access-denied-handler ref="my403" />
+		<intercept-url pattern="/img_mainhome/**"
+			access="permitAll" />
+			
+		
+		<intercept-url pattern="/adminmode.do"
+			access="hasRole('ROLE_ADMIN')" />
+		
+		
+		
+		<!-- 모든 url 패턴에 ROLE_USER의 권한을 가지고 있을때만 접근가능 -->
+		<intercept-url pattern="/adminmode.do"
+			access="hasRole('ROLE_ADMIN')" />
+				<intercept-url pattern="/adminhome.jsp"
+			access="hasRole('ROLE_ADMIN')" />
+		<custom-filter before="FORM_LOGIN_FILTER"
+			ref="loginJwtFilter" />
+
+		<!-- login-page 로그인 페이지 주소를 지정 username-parameter 로그인 페이지 form에 있는 username을 
+			저장한 변수이름 지정 password-parameter 로그인 페이지 form에 있는 password을 저장한 변수이름 지정 login-processing-url 
+			로그인 페이지 form action에 입력할 주소 지정 또는 ajax url -->
+
+		<custom-filter before="FIRST"
+			ref="jwtAuthorizationFilter" />
+
+		<csrf disabled="true" />
+		<form-login username-parameter="loginId"
+			password-parameter="loginPwd" login-processing-url="/logingo.do"
+			login-page="/loginfom.do" default-target-url="/loginfom.do" />
+		<logout logout-url="/securitylogout.do"
+			success-handler-ref="securityLogoutSuccessHandler" />
+
+	</http>
+
+
+	<beans:bean id="my403"
+		class="com.spring.finall.security.MyAccessDeniedHandler">
+		<beans:property name="errorPage" value="403" />
+	</beans:bean>
+
+
+	<!-- 로그인 검증할 매니져를 만든다. -->
+	<authentication-manager
+		alias="authenticationManager">
+		<authentication-provider
+			ref="adminAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="adminAuthenticationProvider"
+		class="com.spring.finall.security.AdminAuthenticationProvider" />
+
+	<!-- 이제부턴 jwt 필터를 등록해서 로그인 -->
+	<beans:bean id="loginJwtFilter"
+		class="com.spring.finall.jwt.JwtLoginFilter"
+		p:authenticationManager-ref="authenticationManager"
+		p:authenticationSuccessHandler-ref="successHandler"
+		p:authenticationFailureHandler-ref="failHandler" />
+		
+		
+		
+		
+	<beans:bean id="userService"
+		class="com.spring.finall.security.CustomUserDetailsService" />
+	<beans:bean id="userAuthProvider"
+		class="com.spring.finall.security.CustomAuthenticationProvider" />
+
+	<!-- 검증 성공후 처리할 핸들러 -->
+	<beans:bean id="successHandler"
+		class="com.spring.finall.security.LoginSuccessHandler" />
+	<beans:bean id="failHandler"
+		class="com.spring.finall.security.LoginFailureHandle" />
+
+
+
+	<!-- 이건 jwt 인증(로그인아님!) 을 위한 필터 등록이다. 또한 팩트로 확인했던것처럼 스프링 프레임워크 제공 필터는 매니져 
+		등록할필요 없음 에러 안남 -->
+	<beans:bean id="jwtAuthorizationFilter"
+		class="com.spring.finall.jwt.JwtAuthorizationFilter"></beans:bean>
+
+	<beans:bean id="JWTUtil"
+		class="com.spring.finall.jwt.JWTUtil">
+		<beans:constructor-arg name="secret"
+			value="hsdfjksdfhjksdfdsfdsfhjkdsfddsfsdf" />
+	</beans:bean>
+
+
+	<beans:bean id="jwtlogoutFilter"
+		class="com.spring.finall.jwt.JwtLogoutFilter" />
+	<beans:bean id="securitylogouthandler"
+		class="com.spring.finall.security.SecurityLogoutHandler"></beans:bean>
+	<beans:bean id="securityLogoutSuccessHandler"
+		class="com.spring.finall.security.SecurityLogoutSuccessHandler"></beans:bean>
+
+
+</beans:beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+
+resultType 는 반드시 정확하게 입력해야함 클래스급으로 오류남
+ -->
+<mapper namespace="WorkImgDAO">
+
+	<select id="selectworkimg" resultType="WorkImgVO">
+		SELECT * FROM worklist order by worklist_regidate desc limit 12; 
+	</select>
+	
+	
+	<select id="graterthanonepage" resultType="WorkImgVO">
+		SELECT * FROM worklist order by worklist_regidate desc limit #{graterthanonepage},12; 
+	</select>
+	
+	
+	
+	
+	<select id="numfornextorback" resultType="int">
+	 select count(*) from worklist;	
+	</select>
+		
+	<select id="insertImg" >
+	 insert into worklist values(#{id},#{worklist_img},#{worklist_comment})
+	</select>
+
+
+
+
+
+
+
+</mapper>

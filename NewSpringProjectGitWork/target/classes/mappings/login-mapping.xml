@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserVO">
+
+
+
+	<select id="injectionLogin" parameterType="UserVO"
+		resultType="UserVO">
+		select * from user where id=#{id} and password=#{password}
+	</select>
+
+
+
+	<select id="getuser" resultType="userVO">
+		select * from user where
+		id=#{id} and
+		password=#{password}
+	</select>
+
+
+	<select id="mypersonalinfo" resultType="UserVO" >
+		SELECT * FROM user WHERE id=#{id};
+	</select>
+
+
+
+
+	<!-- insert into user values(#{id},#{password}) -->
+	<!-- 한편 네이버 정보로 가입시킬시는 password 컬럼에 불필요란 갑을 넣고있다. -->
+	<insert id="insertmember" parameterType="userVO"
+		useGeneratedKeys="true" keyProperty="user_code">
+
+		insert into
+		user(user_where,id,password,user_tell,user_name)
+		values(#{user_where},#{id},#{password},#{user_tell},#{user_name})
+	</insert>
+
+	<select id="selectusercode" parameterType="userVO"
+		resultType="Integer">
+
+		select user_code from user where id=#{id}
+	</select>
+
+
+	<select id="selectmainhomeuser_code" parameterType="userVO"
+		resultType="Integer">
+		select user_code from user where id=#{id}
+
+	</select>
+
+
+	<insert id="insertPhone" parameterType="userVO"
+		useGeneratedKeys="true" keyProperty="user_code">
+
+		insert into
+		user(user_where,id,user_name)
+		values(#{user_where},#{id},#{user_name})
+	</insert>
+
+
+
+
+<!--네이버 회원 전용 메서드이다. 주의할건
+네이버가 준 회원의 아이디는 유일하며, 현재 네이버에서 받은 유일한 아이디로만 톰캣사이트에서  기회원인지 판단 가능하다.
+-->
+	<select id="checkidMembership" resultType="userVO">
+
+		select * from user
+		where id=#{id}
+
+	</select>
+
+
+	<select id="isDuplicated" resultType="Integer">
+
+		select count(*) from user
+		where id=#{id}
+
+	</select>
+
+
+
+	<select id="checkPhoneMembership" resultType="userVO">
+
+		select * from user
+		where id=#{id};
+
+	</select>
+
+
+
+	<select id="checkidMembershiptwo" resultType="userVO">
+
+		select id from user
+		where id=#{id}
+
+	</select>
+
+
+<!-- 원래의 비빌번호를 가져온다. -->
+	<select id="loginpasswordMembership" resultType="userVO">
+
+		select password
+		from user where id=#{id}
+
+	</select>
+<!-- 원래의 비밀번호를 wehre 조건으로 하여 새롭게 받은 암호화된 비번으로 업데이트 한다.  -->
+	<update id="changePasswordComplete" parameterType="java.util.HashMap">
+		update user set password=#{afterpassword} where
+		password=#{beforepassword} and id=#{id}
+	</update>
+
+
+
+</mapper>

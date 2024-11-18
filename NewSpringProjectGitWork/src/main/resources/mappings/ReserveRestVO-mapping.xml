@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- resultType 는 반드시 정확하게 입력ㅓㅁ해야함 클래스급으로 오류남 으휴 적어주면 뭐하냐 시발 좀 주석단것좀봐라 -->
+<mapper namespace="ReserveRestVO">
+
+	<select id="reserverest" resultType="Integer"
+		parameterType="java.util.HashMap">
+		select rest from reserverest where
+		onedayclass_num=#{onedayclass_num} and
+		openday=#{openday}
+	</select>
+
+
+
+
+	<update id="reserverestupdate" parameterType="java.util.HashMap">
+		UPDATE reserverest SET rest=#{rest}-1 WHERE
+		onedayclass_num=#{onedayclass_num} AND openday=#{openday};
+	</update>
+
+	<update id="reserverestpaycancelupdate"
+		parameterType="java.util.HashMap">
+		UPDATE reserverest SET rest=#{rest}+1 WHERE
+		onedayclass_num=#{onedayclass_num} AND openday=#{openday};
+	</update>
+
+
+</mapper>

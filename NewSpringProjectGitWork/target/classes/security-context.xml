@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+	<!-- 폼기반이다. -->
+	
+	
+	
+	<http pattern="/img_mainhome/**" security="none" />
+	<http pattern="/img_onedayclass/**" security="none" />
+	<http pattern="/img/**" security="none" />
+
+	<http pattern="/img_board/**" security="none" />
+	<http pattern="/img_cart/**" security="none" />
+	<http pattern="/img_icon/**" security="none" />
+
+	<http pattern="/img_infoicon/**" security="none" />
+	<http pattern="/img_login/**" security="none" />
+	<http pattern="/img_main/**" security="none" />
+
+	<http pattern="/img_membership/**" security="none" />
+	<http pattern="/img_product/**" security="none" />
+	<http pattern="/img_review/**" security="none" />
+	<http pattern="/js/**" security="none" />
+
+<!-- 
+use-expressions="true" 이거 않하면 jsp 에서 security 관련 태그 쓸시 오류남 
+false 로 하고 싶으면 또 뭐 빈등록하고 쌩지랄 해야함 :org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler
+
+
+ -->
+	<http auto-config="true" use-expressions="true">
+		<access-denied-handler ref="my403" />		
+		
+		<intercept-url pattern="/board/**" access="ROLE_USER" />
+		<intercept-url pattern="/hell/**" access="ROLE_ADMIN" />
+		<!--  <custom-filter before="LOGOUT_FILTER" ref="formLogOutFilter" />  -->
+		<custom-filter before="FORM_LOGIN_FILTER"
+			ref="loginFormFilter" />			
+			
+			<csrf disabled="true" />
+		 <form-login username-parameter="loginId"
+			password-parameter="loginPwd" login-processing-url="/logingo.do"
+			login-page="/loginfom.do" default-target-url="/loginfom.do" />
+			
+	 	<logout logout-url="/securitylogout.do"		
+			success-handler-ref="fomLogOutSuccessHandler"/> 
+			
+			
+	</http>
+
+
+<!-- 주의: 이건 인메모리 방식으로 어딘가에 아이디 비번이 저장되는 거임 이제 메니져 커스텀을 할것임  -->
+	<!-- <authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="admin" password="{noop}admin"
+					authorities="ROLE_ADMIN" />
+				<user name="user" password="{noop}user" authorities="ROLE_USER" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+ -->
+
+
+<!-- 메니져를 만든다.  -->
+<!-- 로그인 검증할 매니져를 만든다. -->
+	<authentication-manager
+		alias="authenticationManager">
+		<authentication-provider
+			ref="adminAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="adminAuthenticationProvider"
+		class="com.spring.FormSecurity.FormAuthenticationProvider" />
+
+		
+		 <!-- 검증 성공후 처리할 핸들러 -->
+	<beans:bean id="successHandler"
+		class="com.spring.FormSecurity.FormSecuritySuccessHandler" />
+	
+
+<!-- 폼 기반 로그인 필터를 등록해서 로그인 -->
+	<beans:bean id="loginFormFilter"
+		class="com.spring.FormSecurity.AuthenticationFilter"
+		p:authenticationManager-ref="authenticationManager"
+		p:authenticationSuccessHandler-ref="successHandler"
+		 />
+		 
+		
+		
+<!-- 권한 없는 페이지 접근시 핸들러임... -->
+	<beans:bean id="fomLogOutSuccessHandler"
+		class="com.spring.FormSecurity.FomLogOutSuccessHandler">
+		
+				
+		
+	</beans:bean>
+		<beans:bean id="formLogOutHandler"
+		class="com.spring.FormSecurity.FormLogOutHandler">
+	</beans:bean>
+	
+		<beans:bean id="formLogOutFilter"
+		class="com.spring.FormSecurity.FormLogOutFilter"
+		
+	
+		>
+		
+	</beans:bean>
+
+
+
+<!-- 권한 없는 페이지 접근시 핸들러임... -->
+	<beans:bean id="my403"
+		class="com.spring.finall.security.MyAccessDeniedHandler">
+		<beans:property name="errorPage" value="403" />
+	</beans:bean>
+
+
+
+
+</beans:beans>
